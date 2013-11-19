@@ -10,7 +10,7 @@ these dependencies in favor of Python's urllib2, which is part of the Standard
 Library.  Since we're just doing basic HTTP GET calls, I felt that eliminating
 the external dependencies made this library as lightweight as possible.
 
-For REST API documentation please see "The OpenAM REST Interface in Black/White"
+For REST API documentation please see:
 https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services
 
 This is not a complete implementation. Only the end-user functionality has
@@ -19,20 +19,18 @@ been included.  None of the administrative methods are implemented... yet.
 Example:
 
 >>> import openam
->>> o = openam.OpenAM('https://example.com/openam')
->>> token = o.authenticate('jathanism', 'password')
->>> o.is_token_valid(token)
+>>> oam = openam.OpenAM('https://example.com/openam')
+>>> oam.authenticate('pepesmith', 'likesbananas')
+>>> oam.is_token_valid()
 True
->>> attrs = o.attributes(token)
+>>> attrs = oam.attributes()
 >>> attrs.attributes.keys()
 ['telephonenumber', 'distinguishedname', 'inetUserStatus', 'displayname', 'cn',
 'dn', 'samaccountname', 'useraccountcontrol', 'objectguid', 'userprincipalname',
 'name', 'objectclass', 'sun-fm-saml2-nameid-info', 'sn', 'mail',
 'sun-fm-saml2-nameid-infokey', 'givenname', 'employeenumber']
->>> attrs.attributes['displayname']
-'McCollum, Jathan'
->>> o.logout(token)
->>> o.is_token_valid(token)
+>>> attrs.attributes.get('displayname')
+'Smith, Pepe'
+>>> oam.logout()
+>>> oam.is_token_valid()
 False
-
-More details Soon(TM).
