@@ -19,7 +19,7 @@ import urllib2
 import json
 
 # REST API URIs
-REST_OPENSSO_LOGIN = '/identity/authenticate'
+REST_OPENSSO_LOGIN = '/identity/json/authenticate'
 REST_OPENSSO_LOGOUT = '/identity/logout'
 REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/getCookieNameForToken'
 REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/getCookieNamesToForward'
@@ -105,7 +105,7 @@ class OpenAM(object):
             msg = 'Invalid Credentials for user "{0}".'.format(username)
             raise AuthenticationFailure(msg)
 
-        self.__token = _parse_token(data)
+        self.__token = json.loads(data).get("tokenId")
 
         return self.token
 
@@ -189,15 +189,6 @@ class UserDetails(DictObject):
     A dict container to make 'userdetails' keys available as attributes.
     """
     pass
-
-
-def _parse_token(data):
-    """
-    Slice/split the token and return it. Exceptions will fall through.
-    """
-    # Server returns tokens as 'key=<value>\r\n' or 'key=<value>\n'
-    key, value = data.strip().split('=', 1)
-    return value
 
 
 def http_get(url, data):
