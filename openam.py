@@ -114,7 +114,7 @@ class OpenAM(object):
         Logout by revoking the token passed. Returns nothing!
         """
         params = {'subjectid': subjectid or self.token}
-        data = self._GET(REST_OPENSSO_LOGOUT, params)
+        self._GET(REST_OPENSSO_LOGOUT, params)
 
     def is_token_valid(self, tokenid=None):
         """
