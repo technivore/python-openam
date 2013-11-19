@@ -11,7 +11,9 @@
 #
 # this project has been copied from https://github.com/jathanism/python-opensso
 
-__author__ = 'Juan J. Brown <juanjbrown@gmail.com>'
+__author_name__ = 'Juan J. Brown'
+__author_email__ = 'juanjbrown@gmail.com'
+__author__ = '{0} <{1}>'.format(__author_name__, __author_email__)
 __version__ = '0.1.6'
 
 import urllib
