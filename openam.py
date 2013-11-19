@@ -142,6 +142,12 @@ class OpenAM(object):
 
         token_details = _get_dict_from_json(data)
 
+        attributes = _openam_attribute_list_to_dict(
+            token_details.get('attributes'))
+
+        if attributes:
+            token_details['attributes'] = attributes
+
         userdetails = UserDetails(token_details)
 
         return userdetails
@@ -194,6 +200,19 @@ def _get_dict_from_json(json_data):
     """
 
     return json.loads(json_data or '{}')
+
+
+def _openam_attribute_list_to_dict(attribute_list):
+    """
+    This converts a list of OpenAM's attributes into a dictionary
+    @param attribute_list: The list of attributes returned from the
+    OpenAM's Rest JSON response
+    """
+    attributes = {}
+    for attribute in attribute_list or []:
+        attributes[attribute['name']] = attribute.get('values')
+
+    return attributes
 
 
 def http_get(url, data):
