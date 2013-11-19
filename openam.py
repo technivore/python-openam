@@ -22,7 +22,7 @@ import json
 REST_OPENSSO_LOGIN = '/identity/json/authenticate'
 REST_OPENSSO_LOGOUT = '/identity/logout'
 REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/json/getCookieNameForToken'
-REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/getCookieNamesToForward'
+REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/json/getCookieNamesToForward'
 REST_OPENSSO_IS_TOKEN_VALID = '/identity/json/isTokenValid'
 REST_OPENSSO_ATTRIBUTES = '/identity/json/attributes'
 
@@ -157,13 +157,8 @@ class OpenAM(object):
         Returns a list of cookie names required by the server. Accepts no arguments.
         """
         data = self._GET(REST_OPENSSO_COOKIE_NAMES_TO_FORWARD)
-        # => 'string=iPlanetDirectoryPro\r\nstring=amlbcookie\r\n'
 
-        # Ditch the 'string=' crap and make into a list
-        cookie_string = data.replace('string=', '')
-        cookie_names = cookie_string.strip().splitlines()
-
-        return cookie_names
+        return json.loads(data).get("string")
 
 
 class DictObject(object):
