@@ -44,10 +44,10 @@ class OpenAM(object):
 
     """
     OpenAM Rest Interface
-    http://blogs.sun.com/docteger/entry/openam_and_rest
+    https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services
 
     Based on django-openam
-    https://github.com/nsb/django-opensso
+    https://github.com/jathanism/django-opensso
 
     Example:
         >>> from openam import OpenAM
