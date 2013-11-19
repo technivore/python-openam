@@ -11,7 +11,7 @@
 #
 # this project has been copied from https://github.com/jathanism/python-opensso
 
-__author__ = 'Jathan McCollum <jathan+bitbucket@gmail.com>'
+__author__ = 'Juan J. Brown <juanjbrown@gmail.com>'
 __version__ = '0.1.3'
 
 import urllib
