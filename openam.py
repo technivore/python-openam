@@ -51,12 +51,12 @@ class OpenAM(object):
 
     Example:
         >>> from openam import OpenAM
-        >>> rest = RestInterface('https://mydomain.com/openam')
-        >>> token = rest.authenticate('joeblow', 'bogus')
+        >>> rest = OpenAM('https://mydomain.com/openam')
+        >>> token = rest.authenticate('pepesmith', 'likesbananas')
         >>> rest.is_token_valid(token)
         True
         >>> rest.attributes(token).attributes['name']
-        'joeblow'
+        'pepesmith'
         >>> rest.logout(token)
         >>> rest.is_token_valid(token)
         False
