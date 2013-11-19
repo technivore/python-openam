@@ -7,7 +7,7 @@
 #
 # For detailed usage information please see "The OpenSSO REST Interface in
 # Black/White"
-# http://blogs.sun.com/docteger/entry/opensso_and_rest
+# https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services
 #
 # This is not a complete implementation. Only the end-user functionality has
 # been included.  None of the administrative methods are implemented... yet.
