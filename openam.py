@@ -67,7 +67,7 @@ class OpenAM(object):
         @param openam_url: the URL to the OpenAM server
         """
         if not openam_url:
-            raise AttributeError(
+            raise ValueError(
                 'This interface needs an OpenAM URL to work!')
 
         self.openam_url = openam_url
