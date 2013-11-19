@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# Python interface to OpenSSO/OpenAM REST API
+# Python interface to OpenAM REST API
 #
-# Code borrowed and reworked from django-opensso by nsb
+# Code borrowed and reworked from django-openam by nsb
 # https://github.com/nsb/django-opensso
 #
-# For detailed usage information please see "The OpenSSO REST Interface in
+# For detailed usage information please see "The OpenAM REST Interface in
 # Black/White"
 # https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services
 #
 # this project has been copied from https://github.com/jathanism/python-opensso
 
 __author__ = 'Juan J. Brown <juanjbrown@gmail.com>'
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 import urllib
 import urllib2
@@ -27,31 +27,31 @@ REST_OPENSSO_ATTRIBUTES = '/identity/attributes'
 
 
 # Exports
-__all__ = ('OpenSSO', 'OpenSSOError', 'UserDetails',)
+__all__ = ('OpenAM', 'OpenAMError', 'UserDetails',)
 
 
 # Exceptions
-class OpenSSOError(Exception):
+class OpenAMError(Exception):
     pass
 
 
-class AuthenticationFailure(OpenSSOError):
+class AuthenticationFailure(OpenAMError):
     pass
 
 
 # Classes
-class OpenSSO(object):
+class OpenAM(object):
 
     """
-    OpenSSO Rest Interface
-    http://blogs.sun.com/docteger/entry/opensso_and_rest
+    OpenAM Rest Interface
+    http://blogs.sun.com/docteger/entry/openam_and_rest
 
-    Based on django-opensso
+    Based on django-openam
     https://github.com/nsb/django-opensso
 
     Example:
-        >>> from opensso import OpenSSO
-        >>> rest = RestInterface('https://mydomain.com/opensso')
+        >>> from openam import OpenAM
+        >>> rest = RestInterface('https://mydomain.com/openam')
         >>> token = rest.authenticate('joeblow', 'bogus')
         >>> rest.is_token_valid(token)
         True
@@ -62,15 +62,15 @@ class OpenSSO(object):
         False
     """
 
-    def __init__(self, opensso_url='',):
+    def __init__(self, openam_url='',):
         """
-        @param opensso_url: the URL to the OpenSSO server
+        @param openam_url: the URL to the OpenAM server
         """
-        if not opensso_url:
+        if not openam_url:
             raise AttributeError(
-                'This interface needs an OpenSSO URL to work!')
+                'This interface needs an OpenAM URL to work!')
 
-        self.opensso_url = opensso_url
+        self.openam_url = openam_url
 
     def __repr__(self):
         """So we can see what is inside!"""
@@ -84,7 +84,7 @@ class OpenSSO(object):
             params = {}
         # data = GET(
         data = http_get(
-            ''.join((self.opensso_url, urlpath)), params
+            ''.join((self.openam_url, urlpath)), params
         )
 
         return data
@@ -235,7 +235,7 @@ def http_get(url, data):
 
     if resp.code != 200:
         # This exception could probably be more meaningful...
-        raise OpenSSOError('Response was not ok for {0}'.format(url))
+        raise OpenAMError('Response was not ok for {0}'.format(url))
 
     data = resp.read()
 

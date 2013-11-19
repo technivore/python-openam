@@ -6,7 +6,7 @@ from distutils.core import setup, Command
 import os
 
 # Get version from pkg index
-from opensso import __version__
+from openam import __version__
 
 
 class CleanCommand(Command):
@@ -24,18 +24,18 @@ class CleanCommand(Command):
         os.system('rm -rf ' + self.files)
 
 long_desc = """
-Python interface for OpenSSO/OpenAM.
+Python interface for OpenAM.
 """
 
 setup(
-    name='python-opensso',
+    name='python-openam',
     version=__version__,
     author='Juan J. Brown',
     author_email='juanjbrown@gmail.com',
     license='MIT',
-    py_modules=['opensso'],
-    url='https://github.com/juanjbrown/python-opensso/',
-    description='Python OpenSSO/OpenAM interface',
+    py_modules=['openam'],
+    url='https://github.com/juanjbrown/python-openam/',
+    description='Python OpenAM interface',
     long_description=long_desc,
     scripts=[],
     cmdclass={
