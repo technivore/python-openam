@@ -21,7 +21,7 @@ import json
 # REST API URIs
 REST_OPENSSO_LOGIN = '/identity/json/authenticate'
 REST_OPENSSO_LOGOUT = '/identity/logout'
-REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/getCookieNameForToken'
+REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/json/getCookieNameForToken'
 REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/getCookieNamesToForward'
 REST_OPENSSO_IS_TOKEN_VALID = '/identity/json/isTokenValid'
 REST_OPENSSO_ATTRIBUTES = '/identity/json/attributes'
@@ -150,7 +150,7 @@ class OpenAM(object):
         params = {'tokenid': tokenid or self.token}
         data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
 
-        return data.split('=')[1].strip()
+        return json.loads(data).get("string")
 
     def get_cookie_names_to_forward(self):
         """
