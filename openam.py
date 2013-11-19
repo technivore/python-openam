@@ -14,7 +14,7 @@
 __author_name__ = 'Juan J. Brown'
 __author_email__ = 'juanjbrown@gmail.com'
 __author__ = '{0} <{1}>'.format(__author_name__, __author_email__)
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 import urllib
 import urllib2
@@ -99,17 +99,23 @@ class OpenAM(object):
     def token(self):
         return self.__token
 
-    def authenticate(self, username, password, uri=''):
+    def authenticate(self, username=None, password=None, token=None, uri=''):
         """
         Authenticate and return a login token.
         """
-        params = {'username': username, 'password': password, 'uri': uri}
-        data = self._GET(REST_OPENSSO_LOGIN, params)
-        if data == '':
-            msg = 'Invalid Credentials for user "{0}".'.format(username)
-            raise AuthenticationFailure(msg)
 
-        self.__token = json.loads(data).get("tokenId")
+        if token:
+            self.__token = token
+        elif username and password:
+            params = {'username': username, 'password': password, 'uri': uri}
+            data = self._GET(REST_OPENSSO_LOGIN, params)
+            if data == '':
+                msg = 'Invalid Credentials for user "{0}".'.format(username)
+                raise AuthenticationFailure(msg)
+
+            self.__token = json.loads(data).get("tokenId")
+        else:
+            raise ValueError("Usename and password or a token has to provided")
 
         return self.token
 
