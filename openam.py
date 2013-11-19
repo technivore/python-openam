@@ -116,6 +116,8 @@ class OpenAM(object):
         params = {'subjectid': subjectid or self.token}
         self._GET(REST_OPENSSO_LOGOUT, params)
 
+        self.__token = None
+
     def is_token_valid(self, tokenid=None):
         """
         Validate a token. Returns a boolen.
