@@ -2,6 +2,7 @@ python-opensso - Python interface to OpenSSO/OpenAM REST API
 
 Code borrowed and reworked from django-opensso by nsb 
 https://github.com/nsb/django-opensso
+https://github.com/jathanism/python-opensso
 
 The opensso.py module provided by django-opensso had a dependency upon 
 python-restclient which in turn had a dependency upon python-httplib2. I removed 

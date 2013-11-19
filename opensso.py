@@ -9,8 +9,7 @@
 # Black/White"
 # https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services
 #
-# This is not a complete implementation. Only the end-user functionality has
-# been included.  None of the administrative methods are implemented... yet.
+# this project has been copied from https://github.com/jathanism/python-opensso
 
 __author__ = 'Jathan McCollum <jathan+bitbucket@gmail.com>'
 __version__ = '0.1.3'
