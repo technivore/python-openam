@@ -16,6 +16,7 @@ __version__ = '0.1.5'
 
 import urllib
 import urllib2
+import json
 
 # REST API URIs
 REST_OPENSSO_LOGIN = '/identity/authenticate'
@@ -23,7 +24,7 @@ REST_OPENSSO_LOGOUT = '/identity/logout'
 REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/getCookieNameForToken'
 REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/getCookieNamesToForward'
 REST_OPENSSO_IS_TOKEN_VALID = '/identity/isTokenValid'
-REST_OPENSSO_ATTRIBUTES = '/identity/attributes'
+REST_OPENSSO_ATTRIBUTES = '/identity/json/attributes'
 
 
 # Exports
@@ -132,13 +133,14 @@ class OpenAM(object):
         The 'attributes_names' argument doesn't really seem to make a difference
         in return results, but it is included because it is part of the API.
         """
-        params = {'attributes_names': attributes_names, 'subjectid': subjectid or self.token}
+        params = {'attributes_names': attributes_names,
+                  'subjectid': subjectid or self.token}
         if kwargs:
             params.update(kwargs)
         data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
 
-        attrs = _parse_attributes(data)
-        userdetails = UserDetails(attrs)
+        token_details = json.loads(data)
+        userdetails = UserDetails(token_details)
 
         return userdetails
 
@@ -187,36 +189,6 @@ class UserDetails(DictObject):
     A dict container to make 'userdetails' keys available as attributes.
     """
     pass
-
-
-# Functions
-def _parse_attributes(data):
-    """
-    Parse a 'userdetails' key-value blob and return it as a dictionary.
-    """
-    lines = data.splitlines()
-
-    # The containers we need
-    attrs = {}
-    attrs['roles'] = []
-    attrs['attributes'] = {}
-
-    for i, line in enumerate(lines):
-        try:
-            this_key, this_value = line.split('=', 1)
-        except ValueError:
-            continue
-
-        # These are pairs of 'name', 'value' on new lines. Lame.
-        if line.startswith('userdetails.attribute.name'):
-                next_key, next_value = lines[i + 1].split('=', 1)
-                attrs['attributes'][this_value] = next_value
-
-        # A bunch of LDAP-style roles
-        if line.startswith('userdetails.role'):
-            attrs['roles'].append(this_value)
-
-    return attrs
 
 
 def _parse_token(data):
