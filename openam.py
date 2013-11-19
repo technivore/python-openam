@@ -12,7 +12,7 @@
 # this project has been copied from https://github.com/jathanism/python-opensso
 
 __author__ = 'Juan J. Brown <juanjbrown@gmail.com>'
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 import urllib
 import urllib2
@@ -71,6 +71,7 @@ class OpenAM(object):
                 'This interface needs an OpenAM URL to work!')
 
         self.openam_url = openam_url
+        self.__token = None
 
     def __repr__(self):
         """So we can see what is inside!"""
@@ -89,6 +90,10 @@ class OpenAM(object):
 
         return data
 
+    @property
+    def token(self):
+        return self.__token
+
     def authenticate(self, username, password, uri=''):
         """
         Authenticate and return a login token.
@@ -99,35 +104,35 @@ class OpenAM(object):
             msg = 'Invalid Credentials for user "{0}".'.format(username)
             raise AuthenticationFailure(msg)
 
-        token = _parse_token(data)
+        self.__token = _parse_token(data)
 
-        return token
+        return self.token
 
-    def logout(self, subjectid):
+    def logout(self, subjectid=None):
         """
         Logout by revoking the token passed. Returns nothing!
         """
-        params = {'subjectid': subjectid}
+        params = {'subjectid': subjectid or self.token}
         data = self._GET(REST_OPENSSO_LOGOUT, params)
 
-    def is_token_valid(self, tokenid):
+    def is_token_valid(self, tokenid=None):
         """
         Validate a token. Returns a boolen.
         """
-        params = {'tokenid': tokenid}
+        params = {'tokenid': tokenid or self.token}
         data = self._GET(REST_OPENSSO_IS_TOKEN_VALID, params)
 
         # 'boolean=true\r\n' or 'boolean=true\n'
         return data.strip() == 'boolean=true'
 
-    def attributes(self, subjectid, attributes_names='uid', **kwargs):
+    def attributes(self, subjectid=None, attributes_names='uid', **kwargs):
         """
         Read subject attributes. Returns UserDetails object.
 
         The 'attributes_names' argument doesn't really seem to make a difference
         in return results, but it is included because it is part of the API.
         """
-        params = {'attributes_names': attributes_names, 'subjectid': subjectid}
+        params = {'attributes_names': attributes_names, 'subjectid': subjectid or self.token}
         if kwargs:
             params.update(kwargs)
         data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
@@ -137,11 +142,11 @@ class OpenAM(object):
 
         return userdetails
 
-    def get_cookie_name_for_token(self, tokenid):
+    def get_cookie_name_for_token(self, tokenid=None):
         """
         Returns name of the token cookie that should be set on the client.
         """
-        params = {'tokenid': tokenid}
+        params = {'tokenid': tokenid or self.token}
         data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
 
         return data.split('=')[1].strip()
