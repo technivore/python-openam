@@ -12,7 +12,7 @@
 # this project has been copied from https://github.com/jathanism/python-opensso
 
 __author__ = 'Juan J. Brown <juanjbrown@gmail.com>'
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 import urllib
 import urllib2
@@ -125,7 +125,7 @@ class OpenAM(object):
         params = {'tokenid': tokenid or self.token}
         data = self._GET(REST_OPENSSO_IS_TOKEN_VALID, params)
 
-        return json.loads(data).get("boolean")
+        return _get_dict_from_json(data).get("boolean") or False
 
     def attributes(self, subjectid=None, attributes_names='uid', **kwargs):
         """
@@ -140,7 +140,8 @@ class OpenAM(object):
             params.update(kwargs)
         data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
 
-        token_details = json.loads(data)
+        token_details = _get_dict_from_json(data)
+
         userdetails = UserDetails(token_details)
 
         return userdetails
@@ -152,7 +153,7 @@ class OpenAM(object):
         params = {'tokenid': tokenid or self.token}
         data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
 
-        return json.loads(data).get("string")
+        return _get_dict_from_json(data).get("string")
 
     def get_cookie_names_to_forward(self):
         """
@@ -160,7 +161,7 @@ class OpenAM(object):
         """
         data = self._GET(REST_OPENSSO_COOKIE_NAMES_TO_FORWARD)
 
-        return json.loads(data).get("string")
+        return _get_dict_from_json(data).get("string")
 
 
 class DictObject(object):
@@ -185,6 +186,14 @@ class UserDetails(DictObject):
     A dict container to make 'userdetails' keys available as attributes.
     """
     pass
+
+
+def _get_dict_from_json(json_data):
+    """
+    Wrapper for json.loads
+    """
+
+    return json.loads(json_data or '{}')
 
 
 def http_get(url, data):
