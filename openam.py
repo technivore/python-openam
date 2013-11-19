@@ -65,9 +65,10 @@ class OpenAM(object):
         False
     """
 
-    def __init__(self, openam_url='',):
+    def __init__(self, openam_url='', timeout=5):
         """
         @param openam_url: the URL to the OpenAM server
+        @param timeout: HTTP requests timeout in seconds
         """
         if not openam_url:
             raise ValueError(
@@ -75,6 +76,7 @@ class OpenAM(object):
 
         self.openam_url = openam_url
         self.__token = None
+        self.__timeout = timeout
 
     def __repr__(self):
         """So we can see what is inside!"""
@@ -88,7 +90,7 @@ class OpenAM(object):
             params = {}
         # data = GET(
         data = http_get(
-            ''.join((self.openam_url, urlpath)), params
+            ''.join((self.openam_url, urlpath)), params, self.__timeout
         )
 
         return data
@@ -217,13 +219,14 @@ def _openam_attribute_list_to_dict(attribute_list):
     return attributes
 
 
-def http_get(url, data):
+def http_get(url, data, timeout):
     """
     Send a simple HTTP GET and attempt to return the response data.
     """
+
     params = urllib.urlencode(data)
     try:
-        resp = urllib2.urlopen(url, params)
+        resp = urllib2.urlopen(url, data=params, timeout=timeout)
     except urllib2.HTTPError:
         return ''
 
