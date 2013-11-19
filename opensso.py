@@ -2,7 +2,7 @@
 
 # Python interface to OpenSSO/OpenAM REST API
 #
-# Code borrowed and reworked from django-opensso by nsb 
+# Code borrowed and reworked from django-opensso by nsb
 # https://github.com/nsb/django-opensso
 #
 # For detailed usage information please see "The OpenSSO REST Interface in
@@ -31,12 +31,17 @@ __all__ = ('OpenSSO', 'OpenSSOError', 'UserDetails',)
 
 
 # Exceptions
-class OpenSSOError(Exception): pass
-class AuthenticationFailure(OpenSSOError): pass
+class OpenSSOError(Exception):
+    pass
+
+
+class AuthenticationFailure(OpenSSOError):
+    pass
 
 
 # Classes
 class OpenSSO(object):
+
     """
     OpenSSO Rest Interface
     http://blogs.sun.com/docteger/entry/opensso_and_rest
@@ -56,12 +61,14 @@ class OpenSSO(object):
         >>> rest.is_token_valid(token)
         False
     """
+
     def __init__(self, opensso_url='',):
         """
         @param opensso_url: the URL to the OpenSSO server
         """
         if not opensso_url:
-            raise AttributeError('This interface needs an OpenSSO URL to work!')
+            raise AttributeError(
+                'This interface needs an OpenSSO URL to work!')
 
         self.opensso_url = opensso_url
 
@@ -75,7 +82,7 @@ class OpenSSO(object):
         """
         if params is None:
             params = {}
-        #data = GET(
+        # data = GET(
         data = http_get(
             ''.join((self.opensso_url, urlpath)), params
         )
@@ -86,7 +93,7 @@ class OpenSSO(object):
         """
         Authenticate and return a login token.
         """
-        params = {'username':username, 'password':password, 'uri':uri}
+        params = {'username': username, 'password': password, 'uri': uri}
         data = self._GET(REST_OPENSSO_LOGIN, params)
         if data == '':
             msg = 'Invalid Credentials for user "{0}".'.format(username)
@@ -100,14 +107,14 @@ class OpenSSO(object):
         """
         Logout by revoking the token passed. Returns nothing!
         """
-        params = {'subjectid':subjectid}
+        params = {'subjectid': subjectid}
         data = self._GET(REST_OPENSSO_LOGOUT, params)
 
     def is_token_valid(self, tokenid):
         """
         Validate a token. Returns a boolen.
         """
-        params = {'tokenid':tokenid}
+        params = {'tokenid': tokenid}
         data = self._GET(REST_OPENSSO_IS_TOKEN_VALID, params)
 
         # 'boolean=true\r\n' or 'boolean=true\n'
@@ -115,13 +122,13 @@ class OpenSSO(object):
 
     def attributes(self, subjectid, attributes_names='uid', **kwargs):
         """
-        Read subject attributes. Returns UserDetails object. 
-        
+        Read subject attributes. Returns UserDetails object.
+
         The 'attributes_names' argument doesn't really seem to make a difference
-        in return results, but it is included because it is part of the API.  
+        in return results, but it is included because it is part of the API.
         """
-        params = {'attributes_names':attributes_names, 'subjectid':subjectid}
-        if kwargs: 
+        params = {'attributes_names': attributes_names, 'subjectid': subjectid}
+        if kwargs:
             params.update(kwargs)
         data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
 
@@ -134,7 +141,7 @@ class OpenSSO(object):
         """
         Returns name of the token cookie that should be set on the client.
         """
-        params = {'tokenid':tokenid}
+        params = {'tokenid': tokenid}
         data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
 
         return data.split('=')[1].strip()
@@ -152,11 +159,14 @@ class OpenSSO(object):
 
         return cookie_names
 
+
 class DictObject(object):
+
     """
     Pass it a dict and now it's an object! Great for keeping variables!
     """
-    def  __init__(self, data=None):
+
+    def __init__(self, data=None):
         if data is None:
             data = {}
         self.__dict__.update(data)
@@ -165,7 +175,9 @@ class DictObject(object):
         """So we can see what is inside!"""
         return '{0}({1})'.format(self.__class__.__name__, self.__dict__)
 
+
 class UserDetails(DictObject):
+
     """
     A dict container to make 'userdetails' keys available as attributes.
     """
@@ -201,6 +213,7 @@ def _parse_attributes(data):
 
     return attrs
 
+
 def _parse_token(data):
     """
     Slice/split the token and return it. Exceptions will fall through.
@@ -208,6 +221,7 @@ def _parse_token(data):
     # Server returns tokens as 'key=<value>\r\n' or 'key=<value>\n'
     key, value = data.strip().split('=', 1)
     return value
+
 
 def http_get(url, data):
     """
