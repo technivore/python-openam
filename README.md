@@ -1,4 +1,4 @@
-Python interface to OpenAM REST API
+Python interface to OpenAM REST Services
 -----------------------------------
 
 Code borrowed and reworked from github repositories:
@@ -12,7 +12,7 @@ these dependencies in favor of Python's urllib2, which is part of the Standard
 Library.  Since we're just doing basic HTTP GET calls, I felt that eliminating
 the external dependencies made this library as lightweight as possible.
 
-For REST API documentation please see [Forgerock Use OpenAM RESTful Services](https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services "Use OpenAM RESTful Services")
+For REST Services documentation please see [Forgerock Use OpenAM RESTful Services](https://wikis.forgerock.org/confluence/display/openam/Use+OpenAM+RESTful+Services "Use OpenAM RESTful Services")
 
 #### Example with username and password:
 
