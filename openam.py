@@ -14,7 +14,7 @@
 __author_name__ = 'Juan J. Brown'
 __author_email__ = 'juanjbrown@gmail.com'
 __author__ = '{0} <{1}>'.format(__author_name__, __author_email__)
-__version__ = '0.1.7'
+__version__ = '1.0.0'
 
 import urllib
 import urllib2
@@ -75,7 +75,6 @@ class OpenAM(object):
                 'This interface needs an OpenAM URL to work!')
 
         self.openam_url = openam_url
-        self.__token = None
         self.__timeout = timeout
 
     def __repr__(self):
@@ -95,49 +94,43 @@ class OpenAM(object):
 
         return data
 
-    @property
-    def token(self):
-        return self.__token
-
-    def authenticate(self, username=None, password=None, token=None, uri=''):
+    def authenticate(self, username=None, password=None, uri=''):
         """
         Authenticate and return a login token.
         """
 
-        if token:
-            self.__token = token
-        elif username and password:
+        token = None
+
+        if username and password:
             params = {'username': username, 'password': password, 'uri': uri}
             data = self._GET(REST_OPENSSO_LOGIN, params)
             if data == '':
                 msg = 'Invalid Credentials for user "{0}".'.format(username)
                 raise AuthenticationFailure(msg)
 
-            self.__token = json.loads(data).get("tokenId")
+            token = json.loads(data).get("tokenId")
         else:
             raise ValueError("Usename and password or a token has to provided")
 
-        return self.token
+        return token
 
-    def logout(self, subjectid=None):
+    def logout(self, subjectid):
         """
         Logout by revoking the token passed. Returns nothing!
         """
-        params = {'subjectid': subjectid or self.token}
+        params = {'subjectid': subjectid}
         self._GET(REST_OPENSSO_LOGOUT, params)
 
-        self.__token = None
-
-    def is_token_valid(self, tokenid=None):
+    def is_token_valid(self, tokenid):
         """
         Validate a token. Returns a boolen.
         """
-        params = {'tokenid': tokenid or self.token}
+        params = {'tokenid': tokenid}
         data = self._GET(REST_OPENSSO_IS_TOKEN_VALID, params)
 
         return _get_dict_from_json(data).get("boolean") or False
 
-    def attributes(self, subjectid=None, attributes_names='uid', **kwargs):
+    def attributes(self, subjectid, attributes_names='uid', **kwargs):
         """
         Read subject attributes. Returns UserDetails object.
 
@@ -145,7 +138,7 @@ class OpenAM(object):
         in return results, but it is included because it is part of the API.
         """
         params = {'attributes_names': attributes_names,
-                  'subjectid': subjectid or self.token}
+                  'subjectid': subjectid}
         if kwargs:
             params.update(kwargs)
         data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
@@ -162,11 +155,11 @@ class OpenAM(object):
 
         return userdetails
 
-    def get_cookie_name_for_token(self, tokenid=None):
+    def get_cookie_name_for_token(self, tokenid):
         """
         Returns name of the token cookie that should be set on the client.
         """
-        params = {'tokenid': tokenid or self.token}
+        params = {'tokenid': tokenid}
         data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
 
         return _get_dict_from_json(data).get("string")
