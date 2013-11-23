@@ -21,12 +21,12 @@ import urllib2
 import json
 
 # REST API URIs
-REST_OPENSSO_LOGIN = '/identity/json/authenticate'
-REST_OPENSSO_LOGOUT = '/identity/logout'
-REST_OPENSSO_COOKIE_NAME_FOR_TOKEN = '/identity/json/getCookieNameForToken'
-REST_OPENSSO_COOKIE_NAMES_TO_FORWARD = '/identity/json/getCookieNamesToForward'
-REST_OPENSSO_IS_TOKEN_VALID = '/identity/json/isTokenValid'
-REST_OPENSSO_ATTRIBUTES = '/identity/json/attributes'
+REST_OPENAM_LOGIN = '/identity/json/authenticate'
+REST_OPENAM_LOGOUT = '/identity/logout'
+REST_OPENAM_COOKIE_NAME_FOR_TOKEN = '/identity/json/getCookieNameForToken'
+REST_OPENAM_COOKIE_NAMES_TO_FORWARD = '/identity/json/getCookieNamesToForward'
+REST_OPENAM_IS_TOKEN_VALID = '/identity/json/isTokenValid'
+REST_OPENAM_ATTRIBUTES = '/identity/json/attributes'
 
 
 # Exports
@@ -103,7 +103,7 @@ class OpenAM(object):
 
         if username and password:
             params = {'username': username, 'password': password, 'uri': uri}
-            data = self._GET(REST_OPENSSO_LOGIN, params)
+            data = self._GET(REST_OPENAM_LOGIN, params)
             if data == '':
                 msg = 'Invalid Credentials for user "{0}".'.format(username)
                 raise AuthenticationFailure(msg)
@@ -119,14 +119,14 @@ class OpenAM(object):
         Logout by revoking the token passed. Returns nothing!
         """
         params = {'subjectid': subjectid}
-        self._GET(REST_OPENSSO_LOGOUT, params)
+        self._GET(REST_OPENAM_LOGOUT, params)
 
     def is_token_valid(self, tokenid):
         """
         Validate a token. Returns a boolen.
         """
         params = {'tokenid': tokenid}
-        data = self._GET(REST_OPENSSO_IS_TOKEN_VALID, params)
+        data = self._GET(REST_OPENAM_IS_TOKEN_VALID, params)
 
         return _get_dict_from_json(data).get("boolean") or False
 
@@ -141,7 +141,7 @@ class OpenAM(object):
                   'subjectid': subjectid}
         if kwargs:
             params.update(kwargs)
-        data = self._GET(REST_OPENSSO_ATTRIBUTES, params)
+        data = self._GET(REST_OPENAM_ATTRIBUTES, params)
 
         token_details = _get_dict_from_json(data)
 
@@ -160,7 +160,7 @@ class OpenAM(object):
         Returns name of the token cookie that should be set on the client.
         """
         params = {'tokenid': tokenid}
-        data = self._GET(REST_OPENSSO_COOKIE_NAME_FOR_TOKEN, params)
+        data = self._GET(REST_OPENAM_COOKIE_NAME_FOR_TOKEN, params)
 
         return _get_dict_from_json(data).get("string")
 
@@ -168,7 +168,7 @@ class OpenAM(object):
         """
         Returns a list of cookie names required by the server. Accepts no arguments.
         """
-        data = self._GET(REST_OPENSSO_COOKIE_NAMES_TO_FORWARD)
+        data = self._GET(REST_OPENAM_COOKIE_NAMES_TO_FORWARD)
 
         return _get_dict_from_json(data).get("string")
 
