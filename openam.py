@@ -172,6 +172,53 @@ class OpenAM(object):
 
         return _get_dict_from_json(data).get("string")
 
+    def get_redirect_url(self, goto, goto_on_fail=None, module=None, force_auth=False, realm=None, service=None):
+        """
+        Returns OpenAM URL that can be used to redirect users to get
+        authenticated
+
+        @param goto:  URL to which the user will be redirected
+        after successfully authenticating.
+        @param module:  This parameter allows authentication using the
+        specified authentication module. Any authentication module can
+        be specified although it must first be registered and
+        configured under the realm to which the user belongs.
+        @param force_auth: This will add a query paremeter that forces
+        the user to authenticate - even if the user currently has a
+        valid session.
+        @param goto_on_fail: This will add a query parameter with
+        a URL to which the user will be redirected after failing the
+        defined authentication process
+        @param realm: This parameter allows a member of a realm to
+        authenticate using the authentication process configured for
+        that particular realm (or sub realm). A user who is not already
+        a member of the realm will receive an error message when they
+        attempt to authenticate using the realm parameter
+        @param service: parameter allows a user to authenticate using a
+        specific authentication chain. For authentication to be
+        successful, the user must authenticate to each authentication
+        module defined in the chain.
+        """
+
+        queries = dict(goto=goto)
+
+        if module:
+            queries["module"] = module
+
+        if force_auth:
+            queries["ForceAuth"] = "true"
+
+        if goto_on_fail:
+            queries['gotoOnFail'] = goto_on_fail
+
+        if realm:
+            queries["realm"] = realm
+
+        if service:
+            queries["service"] = service
+
+        return _set_query_parameter(self.openam_url, queries)
+
 
 class DictObject(object):
 
