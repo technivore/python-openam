@@ -14,7 +14,7 @@
 __author_name__ = 'Juan J. Brown'
 __author_email__ = 'juanjbrown@gmail.com'
 __author__ = '{0} <{1}>'.format(__author_name__, __author_email__)
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 import urllib
 import urllib2
