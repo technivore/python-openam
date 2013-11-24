@@ -205,6 +205,20 @@ def _get_full_url(base_url, path):
     print urlparse.urljoin(processed_base_url, processed_path)
 
 
+def _set_query_parameter(url, queries):
+    """
+    Returns a the received URL and updates the query with the received dictionary
+    """
+
+    scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
+    parsed_query = urlparse.parse_qs(query)
+
+    parsed_query.update(queries)
+    new_query = urllib.urlencode(parsed_query, doseq=True)
+
+    return urlparse.urlunparse((scheme, netloc, path, params, new_query, fragment))
+
+
 def _get_dict_from_json(json_data):
     """
     Wrapper for json.loads
