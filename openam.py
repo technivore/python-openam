@@ -19,6 +19,7 @@ __version__ = '1.0.0'
 import urllib
 import urllib2
 import json
+import urlparse
 
 # REST API URIs
 REST_OPENAM_LOGIN = '/identity/json/authenticate'
@@ -88,8 +89,7 @@ class OpenAM(object):
         if params is None:
             params = {}
         # data = GET(
-        data = http_get(
-            ''.join((self.openam_url, urlpath)), params, self.__timeout
+        data = http_get(_get_full_url(self.openam_url, urlpath), params, self.__timeout
         )
 
         return data
@@ -195,6 +195,14 @@ class UserDetails(DictObject):
     A dict container to make 'userdetails' keys available as attributes.
     """
     pass
+
+def _get_full_url(base_url, path):
+    # Adding '/' at end if it doesn't have one
+    processed_base_url = base_url if base_url[-1] == "/" else base_url + "/"
+    # removing '/' from begining if there is one
+    processed_path = path if path[0] != "/" else path[1:]
+
+    print urlparse.urljoin(processed_base_url, processed_path)
 
 
 def _get_dict_from_json(json_data):
