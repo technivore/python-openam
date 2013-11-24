@@ -18,11 +18,10 @@ For REST Services documentation please see [Forgerock Use OpenAM RESTful Service
 
     >>> import openam
     >>> oam = openam.OpenAM('https://example.com/openam')
-    >>> oam.authenticate(username='pepesmith', password='likesbananas')
-    PQIQ5wM5MY4Sfcy41FiSxJBxu9queZd1mTYsSDuaoREST2nP.*AAJMITACDDAEElNLABQtNTU1MDYzMjI5MjYzMTA1NTp3PQ.*
-    >>> oam.is_token_valid()
+    >>> token = oam.authenticate(username='pepesmith', password='likesbananas')
+    >>> oam.is_token_valid(token)
     True
-    >>> attrs = oam.attributes()
+    >>> attrs = oam.attributes(token)
     >>> attrs.attributes.keys()
     ['telephonenumber', 'distinguishedname', 'inetUserStatus', 'displayname', 'cn',
     'dn', 'samaccountname', 'useraccountcontrol', 'objectguid', 'userprincipalname',
@@ -30,8 +29,8 @@ For REST Services documentation please see [Forgerock Use OpenAM RESTful Service
     'sun-fm-saml2-nameid-infokey', 'givenname', 'employeenumber']
     >>> attrs.attributes.get('displayname')
     'Smith, Pepe'
-    >>> oam.logout()
-    >>> oam.is_token_valid()
+    >>> oam.logout(token)
+    >>> oam.is_token_valid(token)
     False
 
 #### Example with token:
@@ -40,10 +39,9 @@ For REST Services documentation please see [Forgerock Use OpenAM RESTful Service
     >>> oam = openam.OpenAM('https://example.com/openam')
     >>> token_cookie_name = oam.get_cookie_name_for_token()
     >>> openam_token = some_cookie_dict.get(token_cookie_name)
-    >>> oam.authenticate(token=openam_token)
-    >>> oam.is_token_valid()
+    >>> oam.is_token_valid(openam_token)
     True
-    >>> attrs = oam.attributes()
+    >>> attrs = oam.attributes(openam_token)
     >>> attrs.attributes.keys()
     ['telephonenumber', 'distinguishedname', 'inetUserStatus', 'displayname', 'cn',
     'dn', 'samaccountname', 'useraccountcontrol', 'objectguid', 'userprincipalname',
@@ -51,6 +49,6 @@ For REST Services documentation please see [Forgerock Use OpenAM RESTful Service
     'sun-fm-saml2-nameid-infokey', 'givenname', 'employeenumber']
     >>> attrs.attributes.get('displayname')
     'Smith, Pepe'
-    >>> oam.logout()
-    >>> oam.is_token_valid()
+    >>> oam.logout(openam_token)
+    >>> oam.is_token_valid(openam_token)
     False
