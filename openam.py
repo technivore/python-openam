@@ -249,7 +249,7 @@ def _get_full_url(base_url, path):
     # removing '/' from begining if there is one
     processed_path = path if path[0] != "/" else path[1:]
 
-    print urlparse.urljoin(processed_base_url, processed_path)
+    return urlparse.urljoin(processed_base_url, processed_path)
 
 
 def _set_query_parameter(url, queries):
