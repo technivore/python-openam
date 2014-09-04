@@ -94,7 +94,7 @@ class OpenAM(object):
 
         return data
 
-    def authenticate(self, username=None, password=None, uri=''):
+    def authenticate(self, username=None, password=None, uri='', realm=None):
         """
         Authenticate and return a login token.
         """
@@ -103,6 +103,8 @@ class OpenAM(object):
 
         if username and password:
             params = {'username': username, 'password': password, 'uri': uri}
+            if realm:
+                params['realm'] = realm
             data = self._GET(REST_OPENAM_LOGIN, params)
             if data == '':
                 msg = 'Invalid Credentials for user "{0}".'.format(username)
