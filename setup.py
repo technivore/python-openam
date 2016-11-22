@@ -34,7 +34,7 @@ setup(
     author_email=__author_email__,
     license='MIT',
     py_modules=['openam'],
-    url='https://github.com/juanjbrown/python-openam/',
+    url='https://github.com/technivore/python-openam/',
     description='Python OpenAM interface',
     long_description=long_desc,
     scripts=[],
